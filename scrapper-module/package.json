@@ -3,6 +3,11 @@
   "version": "1.0.0",
   "description": "Web Scraping API using Puppeteer.",
   "main": "app.js",
+  "engines": {
+    "node": "18.x"
+  },
+  "scripts": {
+    "start": "node index.js",
   "scripts": {
     "start": "node app.js",
     "dev": "nodemon app.js",
