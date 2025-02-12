@@ -1,0 +1,243 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Season {
+  SUMMER
+  SPRING
+  WINTER
+  AUTUMN
+
+  @@map("season")
+}
+
+model Product {
+  productKey   String   @id @unique @default(dbgenerated("gen_random_uuid()")) @db.Uuid @map("product_key")
+  idProduct    String   @unique @map("id_product")
+  createdAt    DateTime @default(now()) @map("created_at")
+  productName  String   @map("product_name")
+  color        String?  @map("color")
+  category     String?  @map("category")
+  subCategory  String?  @map("sub_category")
+  description  String?  @map("description")
+  price        String?  @map("price")
+  currency     String?  @map("currency")
+  url          String   @map("url")
+  idProductSmi String   @unique @map("id_product_smi")
+  offerId      Int      @map("offer_id")
+  keywords     String?  @map("keywords")
+  availability Boolean? @map("availability")
+  idCateg      String?  @map("id_categ")
+  idSubCateg   String?  @map("id_sub_categ")
+  imageUrl     String?  @map("image_url")
+  season       Season?
+  conversionRate  Float?  @map("conversion_rate") @default(0)
+  totalSales   BigInt?  @map("total_sales") @default(0)
+  totalClicks  BigInt?  @map("total_clicks")  @default(0)
+  gender       String?  
+
+  @@map("product")
+  @@index([offerId])
+  @@index([idCateg])
+  @@index([idSubCateg])
+}
+
+model Failed {
+  failedKey    String   @id @unique @default(dbgenerated("gen_random_uuid()")) @db.Uuid @map("failed_key")
+  createdAt    DateTime @default(now()) @map("created_at")
+  idProductSmi String   @unique @map("id_product_smi")
+  url          String   @map("url")
+  errorMessage String   @map("error_message")
+  resolved     Boolean  @default(false) @map("resolved")
+  ignore       Boolean  @default(false) @map("ignore")
+  offerId      Int      @map("offer_id")
+  retryCount   Int      @map("retry_count")
+  idProduct    String?  @map("id_product")
+
+  @@map("failed")
+}
+
+model Invalid {
+  invalidKey   String     @id @unique @default(dbgenerated("gen_random_uuid()")) @db.Uuid @map("invalid_key")
+  createdAt    DateTime   @default(now()) @map("created_at")
+  idProductSmi String     @unique @map("id_product_smi")
+  url          String     @map("url")
+  offerId      Int        @map("offer_id")
+  reason       String?    @map("reason")
+
+  @@map("invalid")
+}
+
+model Influencer {
+  uid                 String   @id @unique
+  banner              String?
+  civility            String?  
+  community_size      Json?
+  country             String?   
+  description         String?  
+  email               String?  
+  first_name          String?   
+  language            String?   
+  last_name           String?   
+  name                String?   
+  private             Boolean?  @default(true)
+  score               BigInt?
+  univers             String[]  @default([])
+  favorite_brands_ids Json?
+  is_deleted          Boolean?  @default(false)
+  gender              String?   
+
+  @@map("influencers")
+}
+
+model Brand {
+  brand_id            String   @id @unique
+  currency            String?  
+  description         String?  
+  description_en      String?  
+  display_name        String?  
+  href                String?  
+  is_private_campaign Boolean? 
+  categories          Json?
+  localisation        String?   
+  name                String?    
+  offer_id            Int? 
+  pic                 String?   
+  private             Boolean?
+  score               BigInt?      
+  influencers         String[]  @default([])
+  is_cpa              Boolean? 
+  is_cpc              Boolean? 
+  is_cpi              Boolean? 
+  language            String?  
+  categ               String[]  @default([])
+  conversionRate      Float?    @map("conversion_rate") @default(0)
+  totalSales          BigInt?   @map("total_sales") @default(0)
+  totalClicks         BigInt?   @map("total_clicks") @default(0)
+  gender              String?
+
+  @@map("brands")
+  @@index([offer_id])
+}
+
+model Click {
+  key          String   @id @unique 
+  article      String?                        
+  createdat    BigInt?                        
+  influencer   String?                        
+  offerid      Int?       
+  idProduct    String?  @map("id_product")                   
+
+  @@map("clicks")
+}
+
+model InfExtraData {
+  key              String   @id @unique             
+  gender           String?                        
+  influence_themes String[]                      
+  activities       String[]  
+
+  @@map("infs_extra_data")
+}
+
+model Conversion {
+  key                       String   @id @unique
+  influencer                String?
+  offerid                   Int?
+  clickid                   String?
+  amount                    Float?
+  articleid                 String?
+  articleimgurl             String?
+  articlepathurl            String?
+  brandkey                  String?
+  categ                     String?
+  subcateg                  String?
+  maincolor                 String?
+  createdat                 BigInt?
+  lastmodified              BigInt?
+  countrycode               String?
+  currency                  String?
+  isprivate                 Boolean?
+  status                    Int?
+  paiement_status           Boolean?
+  referral_influencer       String?
+  smi_sales_payment_status  Int?
+  smi_referral_payment_status Int?
+  season                    Season?
+  idProduct                 String?   @map("id_product")
+
+  @@map("conversions")
+  @@index([articleid])
+  @@index([idProduct])
+  @@index([influencer])
+  @@index([offerid])
+}
+
+model Category {
+  idCateg       String   @id @default(cuid()) @map("id_categ")
+  categoryName  String   @map("category_name")
+  idCategSmi    String[] @map("id_categ_smi")
+
+  @@map("category")
+}
+
+model subCategory {
+  idSubCateg    String   @id @default(cuid()) @map("id_sub_categ")
+  subCategName  String   @map("sub_categ_name")
+  idCateg       String[]   @map("id_categ")
+
+  @@map("subcategory")
+}
+
+model CategorySmi {
+  key      String   @id @unique
+  img      String?
+  subCateg String[] @default([]) @map("sub_categ")
+  text_en  String?
+  text_es  String?
+  text_fr  String?
+  text_pl  String?
+
+  @@map("category_smi")
+}
+
+model InfsCategKpis {
+  key              String   @id @default(cuid())
+  uid              String
+  category         String   
+  subcategory      String?  
+  sales_kpi        Float    @default(0)
+  univers_kpi      Float    @default(0)
+  infs_themes_kpi  Float    @default(0)
+
+  @@map("infs_categ_kpis")
+  @@unique([uid, category, subcategory])
+}
+
+model InfsThemeCateg {
+  key               String   @id @default(cuid())
+  influence_themes  String
+  id_categ          String[]
+
+  @@map("infs_theme_categ")
+}
+
+model Articles {
+  id            String    @id @unique
+  createdAt     BigInt?   @map("created_at")
+  image         String?   
+  offerId       Int       @map("offer_id")
+  site          String?
+  tracking_link String?
+  uid           String?
+  url           String?
+  wishlistId    String?
+  isScraped     Boolean?  @default(false) @map("is_scraped")
+
+  @@map("articles")
+}

@@ -1,0 +1,6 @@
+-- AlterTable
+ALTER TABLE "clicks" ALTER COLUMN "createdat" SET DATA TYPE DECIMAL(65,30);
+
+-- AlterTable
+ALTER TABLE "conversions" ALTER COLUMN "createdat" SET DATA TYPE DECIMAL(65,30),
+ALTER COLUMN "lastmodified" SET DATA TYPE DECIMAL(65,30);
