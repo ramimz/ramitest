@@ -7,7 +7,6 @@ require("dotenv").config({
 });
 
 const env = require("./config/env");
-const { specs, swaggerUi } = require("./config/swagger");
 const scrapeRoutes = require("./routes/scrape.routes");
 const productsRoutes = require("./routes/product.routes");
 const failedRoutes = require("./routes/failed.routes");
@@ -32,7 +31,6 @@ app.get("/home", (req, res) => {
     message: "The app is working properly!",
   });
 });
-app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(specs));
 app.use("/", scrapeRoutes);
 app.use("/", failedRoutes);
 app.use("/p", productsRoutes);
@@ -47,22 +45,4 @@ app.use("/a", articlesRoutes);
 const PORT = env.SCRAPPER_MODULE_PORT || 3003;
 app.listen(PORT, () => {
   console.log(`Server is running on http://localhost:${PORT}`);
-});
-
-const { startConsumers } = require("./rabbitmq/consumer");
-
-// Start consuming messages from RabbitMQ queues
-startConsumers();
-
-require("./triggers/global.listener.js");
-
-process.on("SIGINT", async () => {
-  console.log("Shutting down gracefully...");
-  // Close the RabbitMQ connection and channel
-  const { channel } = require("./rabbitmq/connection");
-  if (channel) {
-    await channel.close();
-    console.log("RabbitMQ channel closed.");
-  }
-  process.exit(0); // Exit the process
 });
