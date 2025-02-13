@@ -26,6 +26,12 @@ app.use(
   })
 );
 app.use(express.json());
+app.get("/home", (req, res) => {
+  return res.status(200).json({
+    title: "Express Testing",
+    message: "The app is working properly!",
+  });
+});
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(specs));
 app.use("/", scrapeRoutes);
 app.use("/", failedRoutes);
@@ -37,10 +43,6 @@ app.use("/cl", clicksRoutes);
 app.use("/cat", categoryRoutes);
 app.use("/sub", subcategoryRoutes);
 app.use("/a", articlesRoutes);
-
-app.get("/test", (req, res) => {
-  res.status(200).json({ message: "API is working!" });
-});
 
 const PORT = env.SCRAPPER_MODULE_PORT || 3003;
 app.listen(PORT, () => {
