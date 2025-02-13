@@ -20,9 +20,11 @@ const subcategoryRoutes = require("./routes/subcategory.routes");
 const articlesRoutes = require("./routes/articles.routes");
 
 const app = express();
-app.use(cors({
-  origin: "*"
-}))
+app.use(
+  cors({
+    origin: "*",
+  })
+);
 app.use(express.json());
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(specs));
 app.use("/", scrapeRoutes);
@@ -36,6 +38,10 @@ app.use("/cat", categoryRoutes);
 app.use("/sub", subcategoryRoutes);
 app.use("/a", articlesRoutes);
 
+app.get("/test", (req, res) => {
+  res.status(200).json({ message: "API is working!" });
+});
+
 const PORT = env.SCRAPPER_MODULE_PORT || 3003;
 app.listen(PORT, () => {
   console.log(`Server is running on http://localhost:${PORT}`);
@@ -46,7 +52,7 @@ const { startConsumers } = require("./rabbitmq/consumer");
 // Start consuming messages from RabbitMQ queues
 startConsumers();
 
-require('./triggers/global.listener.js');
+require("./triggers/global.listener.js");
 
 process.on("SIGINT", async () => {
   console.log("Shutting down gracefully...");
