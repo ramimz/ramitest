@@ -35,4 +35,4 @@ ENV PUPPETEER_EXECUTABLE_PATH=/usr/bin/chromium
 
 
 # Start the application
-CMD ["node", "app.js"]
+CMD ["node", "index.js"]
