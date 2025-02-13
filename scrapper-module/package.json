@@ -1,14 +1,18 @@
 {
-  "name": "web-scraping-api",
+  "name": "vercel-testing",
   "version": "1.0.0",
-  "description": "Web Scraping API using Puppeteer.",
-  "main": "app.js",
-  "scripts": {
-    "start": "node app.js",
-    "dev": "nodemon app.js",
-    "migrate": "dotenv -e ../.env -- npx prisma migrate dev --schema=./prisma/schema.prisma",
-    "start-cron": "node ./triggers/global.cron.js"
+  "description": "node express testing",
+  "main": "index.js",
+  "engines": {
+    "node": "18.x"
   },
+  "scripts": {
+    "start": "node index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
   "dependencies": {
     "@google-cloud/translate": "^8.5.0",
     "@prisma/client": "^6.1.0",
